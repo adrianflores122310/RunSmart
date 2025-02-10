@@ -1,74 +1,174 @@
-{\rtf1\ansi\ansicpg1252\cocoartf2821
-\cocoatextscaling0\cocoaplatform0{\fonttbl\f0\fswiss\fcharset0 Helvetica;}
-{\colortbl;\red255\green255\blue255;}
-{\*\expandedcolortbl;;}
-\margl1440\margr1440\vieww11520\viewh8400\viewkind0
-\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural\partightenfactor0
+import { BrowserRouter as Router, Route, Routes, Link } from "react-router-dom";
+import { useState } from "react";
+import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { MapPin, Activity, Users } from "lucide-react";
+import { motion } from "framer-motion";
 
-\f0\fs24 \cf0 import \{ useState \} from 'react';\
-import \{ Card, CardContent \} from "@/components/ui/card";\
-import \{ Button \} from "@/components/ui/button";\
-import \{ Input \} from "@/components/ui/input";\
-\
-export default function RunSmart() \{\
-  const [goal, setGoal] = useState("resistencia");\
-  const [weight, setWeight] = useState(70); // Peso en kg\
-  const [calories, setCalories] = useState(0);\
-\
-  const calculateCalories = () => \{\
-    let baseCalories = 0;\
-    if (goal === "resistencia") baseCalories = weight * 30;\
-    if (goal === "marat\'f3n") baseCalories = weight * 35;\
-    if (goal === "gana m\'fasculo") baseCalories = weight * 40;\
-    setCalories(baseCalories);\
-  \};\
-\
-  const [recipes, setRecipes] = useState([\
-    \{ name: "Ensalada de quinoa", calories: 400, type: "resistencia" \},\
-    \{ name: "Batido proteico", calories: 250, type: "marat\'f3n" \},\
-    \{ name: "Pasta con pollo", calories: 600, type: "gana m\'fasculo" \},\
-  ]);\
-\
-  const filteredRecipes = recipes.filter(recipe => recipe.type === goal);\
-\
-  return (\
-    <div className="p-6 max-w-3xl mx-auto">\
-      <h1 className="text-2xl font-bold mb-4">RunSmart - Nutrici\'f3n para Corredores</h1>\
-      <p className="mb-4">Selecciona tu objetivo y descubre recetas ideales para tu entrenamiento.</p>\
-      \
-      <select \
-        className="border rounded p-2 mb-4 w-full" \
-        value=\{goal\} \
-        onChange=\{(e) => setGoal(e.target.value)\}\
-      >\
-        <option value="resistencia">Resistencia</option>\
-        <option value="marat\'f3n">Marat\'f3n</option>\
-        <option value="gana m\'fasculo">Ganar M\'fasculo</option>\
-      </select>\
-      \
-      <div className="mb-4">\
-        <label className="block font-semibold">Ingresa tu peso (kg):</label>\
-        <Input \
-          type="number" \
-          value=\{weight\} \
-          onChange=\{(e) => setWeight(Number(e.target.value))\} \
-          className="border rounded p-2 w-full"\
-        />\
-        <Button className="mt-2 w-full" onClick=\{calculateCalories\}>Calcular Calor\'edas</Button>\
-        \{calories > 0 && <p className="mt-2">Requerimiento diario: <strong>\{calories\} kcal</strong></p>\}\
-      </div>\
-\
-      <div className="grid gap-4">\
-        \{filteredRecipes.map((recipe, index) => (\
-          <Card key=\{index\} className="p-4 border rounded">\
-            <CardContent>\
-              <h2 className="text-lg font-semibold">\{recipe.name\}</h2>\
-              <p className="text-sm">Calor\'edas: \{recipe.calories\}</p>\
-            </CardContent>\
-          </Card>\
-        ))\}\
-      </div>\
-    </div>\
-  );\
-\}\
+// Navbar mejorado
+function Navbar() {
+  return (
+    <nav className="w-full bg-blue-500 p-4 text-white flex justify-center shadow-lg">
+      <Link
+        className="mx-4 hover:text-blue-200 transition-colors duration-300"
+        to="/"
+      >
+        Inicio
+      </Link>
+      <Link
+        className="mx-4 hover:text-blue-200 transition-colors duration-300"
+        to="/runsmart"
+      >
+        Nutrición
+      </Link>
+    </nav>
+  );
+}
+
+// Página de inicio
+function Home() {
+  return (
+    <div className="min-h-screen bg-gray-100 flex flex-col items-center p-6">
+      <header className="w-full max-w-4xl text-center py-10 px-4">
+        <h1 className="text-4xl md:text-5xl font-bold text-gray-800">
+          RunSmart 🏃‍♂️
+        </h1>
+        <p className="text-gray-600 mt-2 text-sm md:text-base">
+          La plataforma todo en uno para corredores: entrenamiento, rutas,
+          comunidad y más.
+        </p>
+      </header>
+
+      <section className="grid md:grid-cols-3 gap-6 w-full max-w-4xl">
+        <FeatureCard
+          icon={<Activity className="text-blue-500 w-12 h-12" />}
+          title="Planes de Entrenamiento"
+          description="Entrena con planes personalizados y ajustados a tu progreso."
+        />
+        <FeatureCard
+          icon={<MapPin className="text-green-500 w-12 h-12" />}
+          title="Rutas Seguras"
+          description="Descubre caminos óptimos según iluminación, tráfico y seguridad."
+        />
+        <FeatureCard
+          icon={<Users className="text-red-500 w-12 h-12" />}
+          title="Comunidad Running"
+          description="Conéctate con otros corredores y participa en retos semanales."
+        />
+      </section>
+
+      <Link to="/runsmart">
+        <Button className="mt-8 px-6 py-3 text-lg font-semibold bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors duration-300">
+          Descubre más 🚀
+        </Button>
+      </Link>
+    </div>
+  );
+}
+
+// Tarjeta de características con animación
+function FeatureCard({ icon, title, description }) {
+  return (
+    <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+      <Card className="hover:shadow-xl transition-shadow duration-300">
+        <CardContent className="flex flex-col items-center p-6">
+          {icon}
+          <h2 className="text-lg font-semibold mt-4">{title}</h2>
+          <p className="text-sm text-gray-600 text-center mt-2">{description}</p>
+        </CardContent>
+      </Card>
+    </motion.div>
+  );
+}
+
+// Página de nutrición mejorada
+function RunSmart() {
+  const [goal, setGoal] = useState("resistencia");
+  const [weight, setWeight] = useState(70);
+  const [calories, setCalories] = useState(0);
+
+  const calculateCalories = () => {
+    let baseCalories =
+      weight * (goal === "resistencia" ? 30 : goal === "maratón" ? 35 : 40);
+    setCalories(baseCalories);
+  };
+
+  const recipes = [
+    { name: "Ensalada de quinoa", calories: 400, type: "resistencia" },
+    { name: "Batido proteico", calories: 250, type: "maratón" },
+    { name: "Pasta con pollo", calories: 600, type: "gana músculo" },
+  ];
+
+  return (
+    <div className="p-6 max-w-3xl mx-auto bg-gradient-to-br from-blue-50 to-green-50 rounded-lg shadow-lg">
+      <h1 className="text-2xl font-bold mb-4 text-gray-800">
+        RunSmart - Nutrición para Corredores
+      </h1>
+      <select
+        className="border rounded p-2 mb-4 w-full bg-white shadow-sm"
+        value={goal}
+        onChange={(e) => setGoal(e.target.value)}
+      >
+        <option value="resistencia">Resistencia</option>
+        <option value="maratón">Maratón</option>
+        <option value="gana músculo">Ganar Músculo</option>
+      </select>
+      <div className="mb-4">
+        <label className="block font-semibold text-gray-700">Peso (kg):</label>
+        <Input
+          type="number"
+          value={weight}
+          onChange={(e) => setWeight(Number(e.target.value))}
+          className="border rounded p-2 w-full bg-white shadow-sm"
+        />
+        <Button
+          className="mt-2 w-full bg-blue-500 hover:bg-blue-600 text-white font-semibold"
+          onClick={calculateCalories}
+        >
+          Calcular Calorías
+        </Button>
+        {calories > 0 && (
+          <p className="mt-2 text-gray-700">
+            Requerimiento diario: <strong>{calories} kcal</strong>
+          </p>
+        )}
+      </div>
+      <div className="grid gap-4">
+        {recipes
+          .filter((recipe) => recipe.type === goal)
+          .map((recipe, index) => (
+            <motion.div
+              key={index}
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+            >
+              <Card className="p-4 border rounded bg-white shadow-sm hover:shadow-md transition-shadow duration-300">
+                <CardContent>
+                  <h2 className="text-lg font-semibold text-gray-800">
+                    {recipe.name}
+                  </h2>
+                  <p className="text-sm text-gray-600">
+                    Calorías: {recipe.calories}
+                  </p>
+                </CardContent>
+              </Card>
+            </motion.div>
+          ))}
+      </div>
+    </div>
+  );
+}
+
+// Componente principal
+export default function App() {
+  return (
+    <Router>
+      <Navbar />
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/runsmart" element={<RunSmart />} />
+      </Routes>
+    </Router>
+  );
 }
